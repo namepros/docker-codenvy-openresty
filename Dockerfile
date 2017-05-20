@@ -101,8 +101,8 @@ RUN true \
         openresty-"$RESTY_VERSION" \
         luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
         luarocks-"$RESTY_LUAROCKS_VERSION" \
-    && ln -s /dev/stdout /var/nginx/logs/access.log \
-    && ln -s /dev/stderr /var/nginx/logs/error.log \
+    && ln -s /dev/stdout /var/log/nginx/access.log \
+    && ln -s /dev/stderr /var/log/nginx/error.log \
     && true
 
 RUN true \
