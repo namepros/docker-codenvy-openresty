@@ -52,15 +52,13 @@ RUN true \
         ca-certificates \
         curl \
         libgd-dev \
-        libgeoip-dev \
         libncurses5-dev \
-        libperl-dev \
         libreadline-dev \
-        libxslt1-dev \
         make \
-        perl \
         unzip \
         zlib1g-dev \
+        libpcre3-dev \
+        libssl1.0-dev \
         # Codenvy
         openssh-server \
         sudo \
