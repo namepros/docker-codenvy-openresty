@@ -44,6 +44,8 @@ ARG _RESTY_CONFIG_OPTIONS="\
     -j${RESTY_MAKE_THREADS} \
     "
 
+USER root
+
 RUN true \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -80,7 +82,7 @@ RUN true \
     && true
 RUN true \
     && cd /tmp/openresty-"$RESTY_VERSION" \
-    && make install \
+    && sudo -H make install \
     && rm -rf \
         openresty-"$RESTY_VERSION".tar.gz \
         openresty-"$RESTY_VERSION" \
@@ -99,13 +101,14 @@ RUN true \
         --lua-suffix="$(for i in /usr/local/openresty/luajit/bin/luajit-*; do i="$(basename "$i")"; echo "${i#lua}"; break; done)" \
         --with-lua-include="$(for i in /usr/local/openresty/luajit/include/luajit-*; do echo "$i"; break; done)" \
     && make -j"$RESTY_MAKE_THREADS" build \
-    && make install \
+    && sudo -H make install \
     && cd /tmp \
     && rm -rf \
         luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
         luarocks-"$RESTY_LUAROCKS_VERSION" \
     && true
 
+USER user
 EXPOSE 80 443
 EXPOSE 22 4403
 WORKDIR /projects
