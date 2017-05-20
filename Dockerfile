@@ -97,10 +97,12 @@ RUN true \
     && popd > /dev/null \
     && rm -rf luarocks-"$RESTY_LUAROCKS_VERSION" luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
     && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
-    && mkdir /var/log/nginx
+    && mkdir /var/log/nginx \
     && ln -s /dev/stdout /var/nginx/logs/access.log \
     && ln -s /dev/stderr /var/nginx/logs/error.log \
     && true
+
+EXPOSE 80 443
 
 
 #################
@@ -147,7 +149,7 @@ RUN true \
 
 ENV LANG en_US.UTF-8
 USER user
-RUN true
+RUN true \
     && sudo locale-gen en_US.UTF-8 \
     && svn --version > /dev/null \
     && cd /home/user \
@@ -156,7 +158,7 @@ RUN true
     && sed -i 's/# store-passwords = no/store-passwords = yes/g' /home/user/.subversion/servers \
     && sed -i 's/# store-plaintext-passwords = no/store-plaintext-passwords = yes/g' /home/user/.subversion/servers \
     && true
-EXPOSE 22 4403 80 443
+EXPOSE 22 4403
 WORKDIR /projects
 ENTRYPOINT ["/home/user/entrypoint.sh"]
 CMD tail -f /dev/null
