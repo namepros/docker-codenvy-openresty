@@ -74,11 +74,11 @@ RUN true \
     && tar xf pcre-"$RESTY_PCRE_VERSION".tar.gz \
     && curl -fSL https://openresty.org/download/openresty-"$RESTY_VERSION".tar.gz -o openresty-"$RESTY_VERSION".tar.gz \
     && tar xf openresty-"$RESTY_VERSION".tar.gz \
-    && pushd /tmp/openresty-"$RESTY_VERSION" > /dev/null \
+    && cd /tmp/openresty-"$RESTY_VERSION" \
     && ./configure $_RESTY_CONFIG_OPTIONS \
     && make -j"$RESTY_MAKE_THREADS" \
     && make -j"$RESTY_MAKE_THREADS" install \
-    && popd > /dev/null \
+    && cd - > /dev/null \
     && rm -rf \
         openssl-"$RESTY_OPENSSL_VERSION" \
         openssl-"$RESTY_OPENSSL_VERSION".tar.gz \
@@ -86,7 +86,7 @@ RUN true \
         pcre-"$RESTY_PCRE_VERSION".tar.gz pcre-"$RESTY_PCRE_VERSION" \
     && curl -fSL http://luarocks.org/releases/luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz -o luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
     && tar xf luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
-    && pushd luarocks-"$RESTY_LUAROCKS_VERSION" > /dev/null \
+    && cd luarocks-"$RESTY_LUAROCKS_VERSION" \
     && ./configure \
         --prefix=/usr/local/openresty/luajit \
         --with-lua=/usr/local/openresty/luajit \
@@ -94,7 +94,7 @@ RUN true \
         --with-lua-include="$(for i in /usr/local/openresty/luajit/include/luajit-*; do echo "$i"; break; done)" \
     && make -j"$RESTY_MAKE_THREADS" build \
     && make install \
-    && popd > /dev/null \
+    && cd - > /dev/null \
     && rm -rf luarocks-"$RESTY_LUAROCKS_VERSION" luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
     && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
     && mkdir /var/log/nginx \
