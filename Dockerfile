@@ -1,4 +1,4 @@
-FROM ubuntu:17.04
+FROM zenexer/codenvy:latest
 
 ARG RESTY_VERSION="1.11.2.3"
 ARG RESTY_LUAROCKS_VERSION="2.4.2"
@@ -59,21 +59,6 @@ RUN true \
         zlib1g-dev \
         libpcre3-dev \
         libssl1.0-dev \
-        # Codenvy
-        openssh-server \
-        sudo \
-        procps \
-        wget \
-        unzip \
-        mc \
-        #ca-certificates \
-        #curl \
-        software-properties-common \
-        python-software-properties \
-        bash-completion \
-        git \
-        subversion \
-        openjdk-8-jdk-headless \
     && DEBIAN_FRONTEND=noninteractive apt-get -y autoremove \
     && DEBIAN_FRONTEND=noninteractive apt-get -y clean \
     && true
@@ -124,43 +109,7 @@ RUN true \
     && true
 
 EXPOSE 80 443
-
-
-#################
-#### Codenvy ####
-#################
-
-# Copyright (c) 2012-2016 Codenvy, S.A.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-# Contributors:
-# Codenvy, S.A. - initial API and implementation
-#
-# Modified by NamePros
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-amd64
-RUN true \
-    && mkdir /var/run/sshd \
-    && sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \
-    && echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
-    && useradd -u 1000 -G users,sudo -d /home/user --shell /bin/bash -m user \
-    && usermod -p "*" user \
-    && sudo update-ca-certificates -f \
-    && sudo sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure \
-    && true
-ENV LANG en_US.UTF-8
-USER user
-RUN true \
-    && sudo locale-gen en_US.UTF-8 \
-    && svn --version > /dev/null \
-    && cd /home/user \
-    && echo "#! /bin/bash\n set -e\n sudo /usr/sbin/sshd -D &\n exec \"\$@\"" > /home/user/entrypoint.sh \
-    && chmod +x /home/user/entrypoint.sh \
-    && sed -i 's/# store-passwords = no/store-passwords = yes/g' /home/user/.subversion/servers \
-    && sed -i 's/# store-plaintext-passwords = no/store-plaintext-passwords = yes/g' /home/user/.subversion/servers \
-    && true
 EXPOSE 22 4403
 WORKDIR /projects
 ENTRYPOINT ["/home/user/entrypoint.sh"]
-CMD tail -f /dev/null
+CMD echo Running && tail -f /dev/null
