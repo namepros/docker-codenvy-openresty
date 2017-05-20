@@ -40,7 +40,6 @@ ARG _RESTY_CONFIG_OPTIONS="\
     --group=www-data \
     --pid-path=/run/nginx.pid \
     --sbin-path=/usr/local/sbin \
-    --bin-path=/usr/local/bin \
     --http-log-path=/var/log/nginx/access.log \
     --error-log-path=/var/log/nginx/error.log \
     --with-openssl=/tmp/openssl-${RESTY_OPENSSL_VERSION} \
