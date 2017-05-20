@@ -36,8 +36,6 @@ ARG RESTY_CONFIG_OPTIONS="\
     "
 # These are not intended to be user-specified
 ARG _RESTY_CONFIG_OPTIONS="\
-    --with-cc-opt='-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2' \
-    --with-ld-opt='-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now' \
     --user=www-data \
     --group=www-data \
     --pid-path=/run/nginx.pid \
@@ -75,7 +73,10 @@ RUN true \
     && curl -fSL https://openresty.org/download/openresty-"$RESTY_VERSION".tar.gz -o openresty-"$RESTY_VERSION".tar.gz \
     && tar xf openresty-"$RESTY_VERSION".tar.gz \
     && cd /tmp/openresty-"$RESTY_VERSION" \
-    && ./configure $_RESTY_CONFIG_OPTIONS \
+    && ./configure \
+        --with-cc-opt='-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2' \
+        --with-ld-opt='-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now' \
+        $_RESTY_CONFIG_OPTIONS \
     && make -j"$RESTY_MAKE_THREADS" \
     && make -j"$RESTY_MAKE_THREADS" install \
     && cd - > /dev/null \
@@ -84,6 +85,14 @@ RUN true \
         openssl-"$RESTY_OPENSSL_VERSION".tar.gz \
         openresty-"$RESTY_VERSION".tar.gz openresty-"$RESTY_VERSION" \
         pcre-"$RESTY_PCRE_VERSION".tar.gz pcre-"$RESTY_PCRE_VERSION" \
+    && mkdir /var/log/nginx \
+    && ln -s /dev/stdout /var/nginx/logs/access.log \
+    && ln -s /dev/stderr /var/nginx/logs/error.log \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y autoremove \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y clean \
+    && true
+
+RUN true \
     && curl -fSL http://luarocks.org/releases/luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz -o luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
     && tar xf luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
     && cd luarocks-"$RESTY_LUAROCKS_VERSION" \
@@ -96,10 +105,8 @@ RUN true \
     && make install \
     && cd - > /dev/null \
     && rm -rf luarocks-"$RESTY_LUAROCKS_VERSION" luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
-    && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
-    && mkdir /var/log/nginx \
-    && ln -s /dev/stdout /var/nginx/logs/access.log \
-    && ln -s /dev/stderr /var/nginx/logs/error.log \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y autoremove \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y clean \
     && true
 
 EXPOSE 80 443
@@ -144,7 +151,8 @@ RUN true \
     && apt-get -y autoremove \
     && sudo update-ca-certificates -f \
     && sudo sudo /var/lib/dpkg/info/ca-certificates-java.postinst configure \
-    && apt-get -y clean \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y autoremove \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y clean \
     && true
 
 ENV LANG en_US.UTF-8
