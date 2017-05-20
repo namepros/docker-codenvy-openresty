@@ -1,4 +1,4 @@
-FROM zenexer/codenvy:latest
+FROM zenexer/codenvy:2017-05-20
 
 ARG RESTY_VERSION="1.11.2.3"
 ARG RESTY_LUAROCKS_VERSION="2.4.2"
@@ -84,8 +84,6 @@ RUN true \
     && rm -rf \
         openresty-"$RESTY_VERSION".tar.gz \
         openresty-"$RESTY_VERSION" \
-        luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
-        luarocks-"$RESTY_LUAROCKS_VERSION" \
     && ln -s /dev/stdout /var/log/nginx/access.log \
     && ln -s /dev/stderr /var/log/nginx/error.log \
     && true
