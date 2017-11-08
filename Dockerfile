@@ -75,17 +75,11 @@ RUN true \
         --with-cc-opt='-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2' \
         --with-ld-opt='-Wl,-Bsymbolic-functions -fPIE -pie -Wl,-z,relro -Wl,-z,now' \
         $_RESTY_CONFIG_OPTIONS \
-    && true
-RUN true \
     && cd /tmp/openresty-"$RESTY_VERSION" \
     && make -j"$RESTY_MAKE_THREADS" \
-    && true
-RUN true \
-    && cd /tmp/openresty-"$RESTY_VERSION" \
     && sudo -H make install \
-    && rm -rf \
-        openresty-"$RESTY_VERSION".tar.gz \
-        openresty-"$RESTY_VERSION" \
+    && cd / \
+    && rm -rf /tmp/openresty-"$RESTY_VERSION".tar.gz /tmp/openresty-"$RESTY_VERSION" \
     && ln -s /dev/stdout /var/log/nginx/access.log \
     && ln -s /dev/stderr /var/log/nginx/error.log \
     && true
@@ -102,10 +96,8 @@ RUN true \
         --with-lua-include="$(for i in /usr/local/openresty/luajit/include/luajit-*; do echo "$i"; break; done)" \
     && make -j"$RESTY_MAKE_THREADS" build \
     && sudo -H make install \
-    && cd /tmp \
-    && rm -rf \
-        luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz \
-        luarocks-"$RESTY_LUAROCKS_VERSION" \
+    && cd / \
+    && rm -rf /tmp/luarocks-"$RESTY_LUAROCKS_VERSION".tar.gz /tmp/luarocks-"$RESTY_LUAROCKS_VERSION" \
     && true
 
 USER user
