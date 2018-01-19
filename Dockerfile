@@ -1,4 +1,4 @@
-FROM zenexer/codenvy:2017-05-20
+FROM zenexer/codenvy:latest
 
 ARG RESTY_VERSION="1.13.6.1"
 ARG RESTY_LUAROCKS_VERSION="2.4.3"
